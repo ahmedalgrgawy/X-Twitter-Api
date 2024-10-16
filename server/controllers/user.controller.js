@@ -1,3 +1,4 @@
+import Notification from "../models/notification.model.js";
 import User from "../models/user.model.js";
 
 export const getUserProfile = async (req, res) => {
@@ -64,6 +65,14 @@ export const toggleFollow = async (req, res) => {
             })
 
             // send notification to target user
+
+            const notification = await Notification.create({
+                from: req.user._id,
+                to: id,
+                type: "follow",
+            })
+
+            await notification.save()
 
             res.status(200).json({ success: true, message: "User followed successfully" });
         }
