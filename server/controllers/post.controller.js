@@ -44,7 +44,37 @@ export const createPost = async (req, res) => {
 }
 
 export const toggleLikes = async (req, res) => { }
-export const commentOnPost = async (req, res) => { }
+
+export const commentOnPost = async (req, res) => {
+    try {
+
+        const { text } = req.body;
+        const userId = req.user._id;
+        const post = await Post.findById(req.params.id);
+
+        if (!text) {
+            return res.status(400).json({ success: false, message: "Comment cannot be empty" });
+        }
+
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found" });
+        }
+
+        const comment = {
+            user: userId,
+            text
+        }
+
+        post.comments.push(comment);
+
+        await post.save();
+
+        return res.status(200).json({ success: true, post });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+}
 
 export const deletePost = async (req, res) => {
     try {
