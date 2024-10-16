@@ -19,7 +19,46 @@ export const getUserProfile = async (req, res) => {
 
 }
 
-export const getSuggestedUsers = async (req, res) => { }
+export const getSuggestedUsers = async (req, res) => {
+
+    try {
+        const userId = req.user._id;
+
+        // get users followed by me
+        const usersFollowedByMe = await User.findById(userId).select("following");
+
+        // get 10 random users expect me
+        const users = await User.aggregate([
+            {
+                $match: {
+                    _id: { $ne: userId }
+                }
+            },
+            {
+                $sample: {
+                    size: 10
+                }
+            }
+        ])
+
+        // filter users not followed by me
+        const filteredUsers = users.filter(user => {
+            return !usersFollowedByMe.following.includes(user._id.toString());
+        })
+
+        // get 4 suggested users
+        const suggestedUsers = filteredUsers.slice(0, 4)
+
+        // empty their password for security purpose
+        suggestedUsers.forEach((user) => { user.password = null })
+
+        return res.status(200).json({ success: true, suggestedUsers })
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+
+}
 
 export const toggleFollow = async (req, res) => {
 
