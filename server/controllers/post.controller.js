@@ -1,4 +1,5 @@
 import cloudinary from "../lib/cloudinary.js"
+import Notification from "../models/notification.model.js"
 import Post from "../models/post.model.js"
 import User from "../models/user.model.js"
 
@@ -43,7 +44,42 @@ export const createPost = async (req, res) => {
     }
 }
 
-export const toggleLikes = async (req, res) => { }
+export const toggleLikes = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found" });
+        }
+
+        const isLiked = post.likes.includes(userId);
+
+        if (isLiked) {
+            // unlike the post
+            await post.updateOne({ $pull: { likes: userId } });
+            res.status(200).json({ success: true, message: "Post unliked" });
+        } else {
+            // like the post
+            post.likes.push(userId);
+            await post.save()
+
+            const notification = new Notification({
+                from: userId,
+                to: post.user,
+                type: 'like'
+            })
+
+            await notification.save()
+
+            res.status(200).json({ success: true, message: "Post liked" });
+
+        }
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+}
 
 export const commentOnPost = async (req, res) => {
     try {
