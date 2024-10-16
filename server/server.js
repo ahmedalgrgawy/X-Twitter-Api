@@ -5,6 +5,7 @@ import cors from "cors";
 import path from 'path'
 import { connectDb } from './lib/connectDb.js';
 import authRoutes from './routes/auth.routes.js'
+import userRoutes from './routes/user.routes.js'
 
 dotenv.config()
 
@@ -17,9 +18,14 @@ app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }))
 
 app.use(express.json({ limit: '10mb' }))
 
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+
 app.use(cookieParser())
 
+// Routes
 app.use("/api/auth", authRoutes)
+app.use("/api/user", userRoutes)
+
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '/client/dist')));
