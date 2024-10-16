@@ -6,6 +6,7 @@ import path from 'path'
 import { connectDb } from './lib/connectDb.js';
 import authRoutes from './routes/auth.routes.js'
 import userRoutes from './routes/user.routes.js'
+import postsRoutes from './routes/posts.routes.js'
 
 dotenv.config()
 
@@ -25,6 +26,7 @@ app.use(cookieParser())
 // Routes
 app.use("/api/auth", authRoutes)
 app.use("/api/user", userRoutes)
+app.use("/api/posts", postsRoutes)
 
 
 if (process.env.NODE_ENV === 'production') {
