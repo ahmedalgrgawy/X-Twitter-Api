@@ -3,6 +3,7 @@ import User from "../models/user.model.js"
 import { generateToken } from "../utils/generateToken.js"
 import { storeToken, storeTokenInCookies } from "../utils/storeToken.js"
 import redis from "../lib/redis.js"
+import jwt from "jsonwebtoken"
 
 export const signup = async (req, res) => {
 
@@ -31,12 +32,7 @@ export const signup = async (req, res) => {
             return res.status(400).json({ error: "Email is already taken" });
         }
 
-        const user = new User.create({
-            username,
-            fullName,
-            email,
-            password,
-        });
+        const user = await User.create({ username, fullName, email, password });
 
         const { accessToken, refreshToken } = generateToken(user._id)
 
