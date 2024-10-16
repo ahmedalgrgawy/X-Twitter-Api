@@ -18,7 +18,7 @@ export const signup = async (req, res) => {
             })
         }
 
-        const existUser = await User.findOne({ email })
+        const existUser = await User.findOne({ username });
 
         if (existUser) {
             res.status(400).json({
