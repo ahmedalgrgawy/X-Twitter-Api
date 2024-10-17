@@ -40,6 +40,11 @@ export const deleteNotification = async (req, res) => {
     try {
         const userId = req.user._id;
         const notificationId = req.params.id.toString();
+        const notification = await Notification.findOne({ _id: notificationId, to: userId });
+
+        if (!notification) {
+            return res.status(404).json({ success: false, message: "Notification not found" });
+        }
 
         await Notification.findOneAndDelete({ _id: notificationId, to: userId });
 
