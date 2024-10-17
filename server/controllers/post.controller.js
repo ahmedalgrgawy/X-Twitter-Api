@@ -3,9 +3,41 @@ import Notification from "../models/notification.model.js"
 import Post from "../models/post.model.js"
 import User from "../models/user.model.js"
 
-export const getAllPosts = async (req, res) => { }
+export const getAllPosts = async (req, res) => {
+    try {
+        // get all posts + comments with user
+        const posts = await Post.find({}).sort({ createdAt: -1 }).populate({
+            path: "user",
+            select: "-password"
+        }).populate({
+            path: "comments",
+            populate: {
+                path: "user",
+                select: "-password"
+            }
+        })
+
+        if (posts.length === 0) {
+            return res.status(200).json({ success: false, message: "No posts found", posts: [] });
+        }
+
+        return res.status(200).json({ success: true, posts });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+}
+
 export const getFollowingPosts = async (req, res) => { }
-export const getLikedPosts = async (req, res) => { }
+
+export const getLikedPosts = async (req, res) => {
+    try {
+
+    } catch (error) {
+
+    }
+}
+
 export const getUserPosts = async (req, res) => { }
 
 export const createPost = async (req, res) => {
