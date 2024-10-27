@@ -5,6 +5,7 @@ import {
     commentOnPost,
     createPost,
     deletePost,
+    editPost,
     getAllPosts,
     getFollowingPosts,
     getLikedPosts,
@@ -21,6 +22,7 @@ router.get("/user/:username", protectedRoute, getUserPosts);
 router.post("/create", protectedRoute, createPost);
 router.post("/like/:id", protectedRoute, toggleLikes);
 router.post("/comment/:id", protectedRoute, commentOnPost);
+router.post("/edit/:id", protectedRoute, editPost);
 router.delete("/delete/:id", protectedRoute, deletePost);
 
 export default router;
