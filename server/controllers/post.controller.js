@@ -215,6 +215,42 @@ export const commentOnPost = async (req, res) => {
     }
 }
 
+export const editComment = async (req, res) => {
+    try {
+
+        const { text, postId } = req.body;
+        const userId = req.user._id;
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found" });
+        }
+
+        const comment = post.comments.id(req.params.id)
+
+        if (!comment) {
+            return res.status(404).json({ success: false, message: "Comment not found" });
+        }
+
+        comment.text = text;
+
+        await post.save()
+
+        return res.status(200).json({ success: true, message: "Comment updated successfully", comment });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+}
+
+export const deleteComment = async (req, res) => {
+    try {
+
+    } catch (error) {
+
+    }
+}
+
 export const editPost = async (req, res) => {
     try {
 
