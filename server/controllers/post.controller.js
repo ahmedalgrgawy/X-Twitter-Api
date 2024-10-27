@@ -226,6 +226,10 @@ export const editComment = async (req, res) => {
             return res.status(404).json({ success: false, message: "Post not found" });
         }
 
+        if (post.user.toString() !== userId.toString()) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
         const comment = post.comments.id(req.params.id)
 
         if (!comment) {
