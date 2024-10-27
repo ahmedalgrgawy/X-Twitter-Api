@@ -61,6 +61,30 @@ export const getSuggestedUsers = async (req, res) => {
 
 }
 
+export const searchUsers = async (req, res) => {
+
+    const { query } = req.query; // Extract the 'query' parameter from the request
+
+    if (!query) {
+        return res.status(400).json({ success: false, message: "Query parameter is required" });
+    }
+
+    try {
+        const users = await User.find({
+            $or: [
+                { username: { $regex: query, $options: 'i' } }, // Case-insensitive search
+                { email: { $regex: query, $options: 'i' } },
+                { fullName: { $regex: query, $options: 'i' } }
+            ]
+        });
+
+        return res.status(200).json({ success: true, users });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
+}
+
 export const toggleFollow = async (req, res) => {
 
     try {
