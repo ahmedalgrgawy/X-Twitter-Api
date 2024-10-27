@@ -25,8 +25,8 @@ router.post("/create", protectedRoute, createPost);
 router.post("/like/:id", protectedRoute, toggleLikes);
 router.post("/comment/:id", protectedRoute, commentOnPost);
 router.post("/edit-comment/:id", protectedRoute, editComment);
-router.post("/delete-comment/:id", protectedRoute, deleteComment);
 router.post("/edit/:id", protectedRoute, editPost);
+router.delete("/delete-comment/:id", protectedRoute, deleteComment);
 router.delete("/delete/:id", protectedRoute, deletePost);
 
 export default router;
